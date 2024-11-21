@@ -37,12 +37,36 @@ class Datasets:
         # Get current working directory
         current_path = os.getcwd()
 
-        # Locate the project root directory by finding "monayvi"
-        aguacate_index = current_path.find("monayvi")
-        if aguacate_index != -1:
-            project_root = current_path[:aguacate_index + len("monayvi")]
+        # Approach 1) Locate the project root directory by finding "monayvi"        
+        # Locate the project root directory by finding "monayvi"        
+        # aguacate_index = current_path.find("monayvi")
+        # if aguacate_index != -1:
+        #     project_root = current_path[:aguacate_index + len("monayvi")]
+        # else:
+        #     raise FileNotFoundError("The directory 'monayvi' was not found in the path.")
+        
+        # Approach 2) Locate the project root directory by finding "monayvi" or "MONAYVI"              
+        # project_name = 'monayvi'
+        # aguacate_index = current_path.find(project_name)
+        # if aguacate_index == -1:
+        #     project_name = project_name.upper()
+        #     aguacate_index = current_path.find(project_name)
+        # if aguacate_index != -1:
+        #     #project_root = current_path[:aguacate_index + len("monayvi")]
+        #     project_root = current_path[:aguacate_index + len(project_name)]
+        # else:
+        #     raise FileNotFoundError("The directory 'monayvi' was not found in the path.")
+        
+        # Approach 3) Locate the project root directory by finding the last slash "/"
+        last_slash_index = current_path.rfind('/')
+        if last_slash_index != -1:
+            project_root = current_path[:last_slash_index]
         else:
-            raise FileNotFoundError("The directory 'monayvi' was not found in the path.")
+            raise FileNotFoundError("The project directory was not found in the path.")  
+
+        # If we want to check paths externally
+        self.cwd = current_path
+        self.project_directory = project_root          
 
         # Set the paths for the cash and fees CSVs
         self.cash_path = os.path.join(project_root, 'data', 'cash_request.csv')
