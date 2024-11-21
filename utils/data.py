@@ -122,7 +122,8 @@ class Datasets:
         claves = list(np.sort(grouped1st['cohorte'].unique()))
         valores = []
         for index, value in enumerate(claves):
-            valores.append(f'COH-{index + 1:02}.{value.strftime("%b")}')
+            #valores.append(f'COH-{index + 1:02}.{value.strftime("%b")}')
+            valores.append(f'COH-{index+1:02}.{value.strftime("%b")}/{str(value.strftime("%y"))}')
 
         labels = dict(zip(claves, valores))
 
