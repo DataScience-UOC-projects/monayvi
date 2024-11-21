@@ -18,9 +18,11 @@ y para usarlos desde jupyter notebook, hay que agregar el path:
 
 ```
 import sys, os
-sys.path.append('../../monayvi/')  # Adjust to the path where utils is located
+sys.path.append(os.getcwd().replace('/notebooks',''))  # Replace '/notebooks' with current directory name
 from utils.data import Datasets
+```
 
+```
 datasets = Datasets()
 cash_cohorts = datasets.create_cash_cohorts()
 original_cash, original_fees = datasets.get_original_datasets()
