@@ -76,9 +76,57 @@ class Datasets:
         self.dataset_cash_original_df = pd.read_csv(self.cash_path)
         self.dataset_fees_original_df = pd.read_csv(self.fees_path)
 
-        # Initialize the cash and fees DataFrames with copies of the originals
+        # Initialize the cash and fees DataFrames with copies of the originals...
         self.cash = self.dataset_cash_original_df.copy()
         self.fees = self.dataset_fees_original_df.copy()
+
+        # ... and apply standard treatment:     
+        #   cash_request   
+        #   - Column cash.id renamed to cash.cash_request_id;
+        #   - Column 'id_usurio' added and populated from the combination of cash.user_id and cash.deleted_account_id;
+        #   - Column cash.created_at converted to datetime;
+        #   - Other columns converted to datetime:
+                # created_at (already converted)
+                # updated_at
+                # moderated_at
+                # reimbursement_date
+                # cash_request_received_date
+                # money_back_date
+                # send_at
+                # reco_creation
+                # reco_last_update        
+        #   fees
+        #   - Columns converted to datetime:
+                # created_at
+                # updated_at
+                # paid_at
+                # from_date
+                # to_date   
+        
+        # Rename 'id' to 'cash_request_id'
+        self.cash.rename(columns={'id': 'cash_request_id'}, inplace=True)
+
+        # Create 'id_usuario' column based on 'user_id' and 'deleted_account_id'
+        self.cash['id_usuario'] = self.cash['user_id'].fillna(self.cash['deleted_account_id'])
+        self.cash['id_usuario'] = self.cash['id_usuario'].astype(int)
+
+        # Convert 'created_at' to datetime
+        self.cash['created_at'] = pd.to_datetime(self.cash['created_at'])        
+        self.cash['updated_at'] = pd.to_datetime(self.cash['updated_at'])        
+        self.cash['moderated_at'] = pd.to_datetime(self.cash['moderated_at'], format='mixed')        
+        self.cash['reimbursement_date'] = pd.to_datetime(self.cash['reimbursement_date'], format='mixed')        
+        self.cash['cash_request_received_date'] = pd.to_datetime(self.cash['cash_request_received_date'])        
+        self.cash['money_back_date'] = pd.to_datetime(self.cash['money_back_date'], format='mixed')        
+        self.cash['send_at'] = pd.to_datetime(self.cash['send_at'], format='mixed')        
+        self.cash['reco_creation'] = pd.to_datetime(self.cash['reco_creation'])        
+        self.cash['reco_last_update'] = pd.to_datetime(self.cash['reco_last_update'])      
+
+        # Convert to datetime         
+        self.fees['created_at'] = pd.to_datetime(self.fees['created_at'])         
+        self.fees['updated_at'] = pd.to_datetime(self.fees['updated_at'])         
+        self.fees['paid_at'] = pd.to_datetime(self.fees['paid_at'], format='mixed')         
+        self.fees['from_date'] = pd.to_datetime(self.fees['from_date'], format='mixed')         
+        self.fees['to_date'] = pd.to_datetime(self.fees['to_date'], format='mixed')         
 
     def create_cash_cohorts(self):
         """
@@ -96,15 +144,15 @@ class Datasets:
         Returns:
         pd.DataFrame: A DataFrame with the 'cohorte' and 'cohorte_lbl' columns added.
         """
-        # Rename 'id' to 'cash_request_id'
-        self.cash.rename(columns={'id': 'cash_request_id'}, inplace=True)
+        # # Rename 'id' to 'cash_request_id'
+        # self.cash.rename(columns={'id': 'cash_request_id'}, inplace=True)
 
-        # Create 'id_usuario' column based on 'user_id' and 'deleted_account_id'
-        self.cash['id_usuario'] = self.cash['user_id'].fillna(self.cash['deleted_account_id'])
-        self.cash['id_usuario'] = self.cash['id_usuario'].astype(int)
+        # # Create 'id_usuario' column based on 'user_id' and 'deleted_account_id'
+        # self.cash['id_usuario'] = self.cash['user_id'].fillna(self.cash['deleted_account_id'])
+        # self.cash['id_usuario'] = self.cash['id_usuario'].astype(int)
 
-        # Convert 'created_at' to datetime
-        self.cash['created_at'] = pd.to_datetime(self.cash['created_at'])
+        # # Convert 'created_at' to datetime
+        # self.cash['created_at'] = pd.to_datetime(self.cash['created_at'])
 
         # Group by 'id_usuario' and find the minimum 'created_at'
         grouped1st = self.cash.pivot_table(
