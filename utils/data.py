@@ -96,6 +96,8 @@ class Datasets:
                 # reco_creation
                 # reco_last_update        
         #   fees
+        #   - Recuperar el valor de 'cash_request_id' a partir de 'reason', para 4 filas con NaN en 'cash_request_id'
+        #   - Conversión de 'cash_request_id' de float a int, para poder enlazarlo con la tabla cash
         #   - Columns converted to datetime:
                 # created_at
                 # updated_at
@@ -103,6 +105,7 @@ class Datasets:
                 # from_date
                 # to_date   
         
+        # -- cash_request -----------------------------------------
         # Rename 'id' to 'cash_request_id'
         self.cash.rename(columns={'id': 'cash_request_id'}, inplace=True)
 
@@ -121,12 +124,40 @@ class Datasets:
         self.cash['reco_creation'] = pd.to_datetime(self.cash['reco_creation'])        
         self.cash['reco_last_update'] = pd.to_datetime(self.cash['reco_last_update'])      
 
+        # -- fees -----------------------------------------
+        # Recuperar el valor de 'cash_request_id' a partir de 'reason', para 4 filas con NaN
+        extract_crid = lambda x: float(x.split(" ")[-1])
+        crid_values = self.fees[self.fees['cash_request_id'].isna()]['reason'].transform(extract_crid)
+        reason_dic = { 'cash_request_id' : crid_values}
+        self.fees.fillna(reason_dic, inplace=True)
+
+        # Conversión de 'cash_request_id' de float a int, para poder enlazarlo con la tabla cash
+        self.fees['cash_request_id'] = self.fees['cash_request_id'].astype(int)
+
         # Convert to datetime         
         self.fees['created_at'] = pd.to_datetime(self.fees['created_at'])         
         self.fees['updated_at'] = pd.to_datetime(self.fees['updated_at'])         
         self.fees['paid_at'] = pd.to_datetime(self.fees['paid_at'], format='mixed')         
         self.fees['from_date'] = pd.to_datetime(self.fees['from_date'], format='mixed')         
         self.fees['to_date'] = pd.to_datetime(self.fees['to_date'], format='mixed')         
+
+    def merge_tables(self):
+        """
+        Merge DataFrames 'cash_request' and 'fees', prefixing all columns of 'fees' with 'fee_'
+         and on the basis of a 'cash_request_id' common key.
+
+        Returns:
+        pd.DataFrame: the result of merging DataFrames 'cash_request' and 'fees'
+        """
+        # Añadir prefijo a columnas tabla fees
+        cash_copy = self.cash.copy()
+        fees_copy = self.fees.copy()        
+        
+        fees_prefixed = fees_copy.add_prefix('fee_')
+
+        self.merged = pd.merge(cash_copy, fees_prefixed, left_on='cash_request_id', right_on='fee_cash_request_id', how='outer') # 32098 rows
+
+        return
 
     def create_cash_cohorts(self):
         """
