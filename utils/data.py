@@ -236,6 +236,23 @@ class Datasets:
 
         return concat_dummies   
     
+    def get_dummies_and_drop_cols(self, tabla, tabla_alias, column):
+        """
+        Transforms categorical columns to numerical
+
+        Returns:
+        pd.DataFrame: the result of applying get_dummies, OneHotEncoder, LabelEncoder or whatever method best suited to each column
+        """
+
+        df = tabla.copy()
+
+        column_dummies = pd.get_dummies(df[column], dtype="int", drop_first=True, prefix=tabla_alias+column, prefix_sep='_')
+
+        concat_dummies = pd.concat([df, column_dummies], axis=1)
+        concat_dummies.drop(columns=[column], inplace=True) 
+
+        return concat_dummies
+    
     # def get_dummies_and_drop_cols(self):
     #     """
     #     Transforms categorical columns to numerical
