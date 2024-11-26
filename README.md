@@ -28,3 +28,12 @@ cash_cohorts = datasets.create_cash_cohorts()
 original_cash, original_fees = datasets.get_original_datasets()
 users_by_cohort = datasets.get_users_by_cohort()
 ```
+## Análisis e investigaciones de los datos en original_cash y original_fees
+
+**Análisis de operaciones en el tiempo**
+
+En los graficos se presentan las distribuciones de solicitudes por hora y por día. Se encuentra un pico de solicitudes para los martes (una disminución en fines de semana), así como un pico de solicitudes a las 16:00 y una distribución de solicitudes centrada en las horas laborables. Esto nos indica que agregar features como hora y día de la semana puede proveer información a modelos de predicción.
+
+![Solicitudes por dia](figures/days_cash.png)
+
+![Solicitudes por hora](figures/hours_cash.png)
