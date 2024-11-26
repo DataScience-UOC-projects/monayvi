@@ -13,6 +13,7 @@ import pandas as pd
 import numpy as np
 import os
 import warnings
+from sklearn.preprocessing import LabelEncoder
 
 #cash_orig = pd.read_csv('../data/cash_request.csv')
 #fees_orig = pd.read_csv('../data/fees.csv')
@@ -132,7 +133,24 @@ class Datasets:
         self.fees.fillna(reason_dic, inplace=True)
 
         # Conversión de 'cash_request_id' de float a int, para poder enlazarlo con la tabla cash
-        self.fees['cash_request_id'] = self.fees['cash_request_id'].astype(int)
+        self.fees['cash_request_id'] = self.fees['cash_request_id'].astype(int)        
+
+        # N.B. En lugar de rellenar, podríamos haber optado por el drop() directamente...
+
+        # Opción A) Drop directo en cash
+        # Drop de las filas 4 filas de fees sin correspondencia en cash_request, y que además tienen fees.status='cancelled'
+        cr_missing = self.fees[self.fees['cash_request_id'].isna()]
+        cr_missing
+        cr_missing.index #Index([1911, 1960, 4605, 11870], dtype='int64')
+        self.fees.drop(index=cr_missing.index, inplace=True)                         
+
+        # Opción B) Drop al hacer el merge (guardo aquí el código que había puesto en merge_tables())
+        # Drop de las filas 4 filas de fees (que tenían NaN en 'cash_request_id' y que inicialmente repoblamos), que ahora vemos que no tienen
+        #  correspondencia en cash_request, y que además tienen fees.status='cancelled'
+        # cr_missing = self.merged[self.merged['cash_request_id'].isna()]
+        # cr_missing
+        # cr_missing.index #Index([11851, 12255, 12794, 13445], dtype='int64')
+        # self.merged.drop(index=cr_missing.index, inplace=True)                
 
         # Convert to datetime         
         self.fees['created_at'] = pd.to_datetime(self.fees['created_at'])         
@@ -157,7 +175,46 @@ class Datasets:
 
         self.merged = pd.merge(cash_copy, fees_prefixed, left_on='cash_request_id', right_on='fee_cash_request_id', how='outer') # 32098 rows
 
-        return
+        return # Finally, merged DataFrame has 32094 rows.
+    
+    def get_dummies_and_drop_cols(self):
+        """
+        Transforms categorical columns to numerical
+
+        Returns:
+        pd.DataFrame: the result of applying get_dummies, OneHotEncoder, LabelEncoder or whatever method best suited to each column
+        """
+
+        # -- cash_request -----------------------------------------
+        cash_status_dummies = pd.get_dummies(self.merged.status, dtype="int", drop_first=True, prefix='cstatus', prefix_sep='_')
+        cash_transfer_type_dummies = pd.get_dummies(self.merged.transfer_type, dtype="int", drop_first=True, prefix='ctranstype', prefix_sep='_')        
+        cash_recovery_status_dummies = pd.get_dummies(self.merged.recovery_status, dtype="int", drop_first=True, prefix='crecostatus', prefix_sep='_')
+
+        # Extract datetime features
+        self.merged['created_year'] = self.merged['created_at'].dt.year
+        self.merged['created_month'] = self.merged['created_at'].dt.month
+        self.merged['created_year_month'] = self.merged.apply(lambda row: str(row["created_year"])+'-'+str(row["created_month"]), axis=1)
+        self.merged['created_dayofweek'] = self.merged['created_at'].dt.dayofweek + 1  # Monday=0, Sunday=6
+        self.merged['created_hour'] = self.merged['created_at'].dt.hour        
+
+        labelencoder = LabelEncoder()
+        self.merged['created_year_month_dummy'] = labelencoder.fit_transform(self.merged['created_year_month'])
+
+        # -- fees -----------------------------------------
+        fees_type_dummies = pd.get_dummies(self.merged.fee_type, dtype="int", drop_first=True, prefix='ftype', prefix_sep='_')
+        fees_status_dummies = pd.get_dummies(self.merged.fee_status, dtype="int", drop_first=True, prefix='fstatus', prefix_sep='_')
+        # Para poder asignar dummies a category rellenaremos con 'ninguna' los datos faltantes
+        #self.merged['fee_category'].fillna('ninguna', inplace=True)
+        self.merged.fillna({'fee_category': 'ninguna'}, inplace=True)
+        fees_category_dummies = pd.get_dummies(self.merged.fee_category, dtype="int", drop_first=True, prefix='fcategory', prefix_sep='_')        
+        fees_charge_moment_dummies = pd.get_dummies(self.merged.fee_charge_moment, dtype="int", drop_first=True, prefix='fchargemoment', prefix_sep='_')
+
+        merged_dummy = pd.concat([self.merged, cash_status_dummies, cash_transfer_type_dummies, cash_recovery_status_dummies,
+                                  fees_type_dummies, fees_status_dummies, fees_category_dummies, fees_charge_moment_dummies], axis=1)
+        merged_dummy.drop(columns=['status','transfer_type','recovery_status','created_year','created_month','created_year_month',
+            'fee_type','fee_status','fee_category','fee_charge_moment'], inplace=True)        
+
+        return merged_dummy   
 
     def create_cash_cohorts(self):
         """
@@ -225,6 +282,15 @@ class Datasets:
         tuple: A tuple containing the original cash DataFrame and the original fees DataFrame.
         """
         return self.dataset_cash_original_df, self.dataset_fees_original_df
+    
+    def get_datasets(self):
+        """
+        Return minimally treated cash and fees DataFrames (columns converted to Datetime, 'id_usuario' populated, dropped 4 rows in fees)
+
+        Returns:
+        tuple: A tuple containing the cash DataFrame and the fees DataFrame.
+        """
+        return self.cash.copy(), self.fees.copy()
 
     def get_users_by_cohort(self):
         """
