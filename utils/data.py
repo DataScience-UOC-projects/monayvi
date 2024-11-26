@@ -173,11 +173,30 @@ class Datasets:
         
         fees_prefixed = fees_copy.add_prefix('fee_')
 
-        self.merged = pd.merge(cash_copy, fees_prefixed, left_on='cash_request_id', right_on='fee_cash_request_id', how='outer') # 32098 rows
+        merged = pd.merge(cash_copy, fees_prefixed, left_on='cash_request_id', right_on='fee_cash_request_id', how='outer') # 32098 rows
 
-        return # Finally, merged DataFrame has 32094 rows.
+        return merged.copy() # Finally, merged DataFrame has 32094 rows.
     
-    def get_dummies_and_drop_cols(self):
+    def desglose_created_at(self, tabla):
+        """
+        Desglose de 'created_at'
+
+        Returns:
+        pd.DataFrame
+        """
+        
+        df = tabla.copy()
+
+        # Extract datetime features
+        df['created_year'] = df['created_at'].dt.year
+        df['created_month'] = df['created_at'].dt.month
+        df['created_year_month'] = df.apply(lambda row: str(row["created_year"])+'-'+str(row["created_month"]), axis=1)
+        df['created_dayofweek'] = df['created_at'].dt.dayofweek + 1  # Monday=0, Sunday=6
+        df['created_hour'] = df['created_at'].dt.hour    
+
+        return df
+
+    def get_dummies_and_drop_cols(self, tabla):
         """
         Transforms categorical columns to numerical
 
@@ -185,36 +204,76 @@ class Datasets:
         pd.DataFrame: the result of applying get_dummies, OneHotEncoder, LabelEncoder or whatever method best suited to each column
         """
 
-        # -- cash_request -----------------------------------------
-        cash_status_dummies = pd.get_dummies(self.merged.status, dtype="int", drop_first=True, prefix='cstatus', prefix_sep='_')
-        cash_transfer_type_dummies = pd.get_dummies(self.merged.transfer_type, dtype="int", drop_first=True, prefix='ctranstype', prefix_sep='_')        
-        cash_recovery_status_dummies = pd.get_dummies(self.merged.recovery_status, dtype="int", drop_first=True, prefix='crecostatus', prefix_sep='_')
+        df = tabla.copy()
 
-        # Extract datetime features
-        self.merged['created_year'] = self.merged['created_at'].dt.year
-        self.merged['created_month'] = self.merged['created_at'].dt.month
-        self.merged['created_year_month'] = self.merged.apply(lambda row: str(row["created_year"])+'-'+str(row["created_month"]), axis=1)
-        self.merged['created_dayofweek'] = self.merged['created_at'].dt.dayofweek + 1  # Monday=0, Sunday=6
-        self.merged['created_hour'] = self.merged['created_at'].dt.hour        
+        if 'id_usuario' in df.columns:
+            # -- cash_request -----------------------------------------
+            cash_status_dummies = pd.get_dummies(df.status, dtype="int", drop_first=True, prefix='cstatus', prefix_sep='_')
+            cash_transfer_type_dummies = pd.get_dummies(df.transfer_type, dtype="int", drop_first=True, prefix='ctranstype', prefix_sep='_')        
+            cash_recovery_status_dummies = pd.get_dummies(df.recovery_status, dtype="int", drop_first=True, prefix='crecostatus', prefix_sep='_')
 
-        labelencoder = LabelEncoder()
-        self.merged['created_year_month_dummy'] = labelencoder.fit_transform(self.merged['created_year_month'])
+            # Extract datetime features
+            df = self.desglose_created_at(df)       
 
-        # -- fees -----------------------------------------
-        fees_type_dummies = pd.get_dummies(self.merged.fee_type, dtype="int", drop_first=True, prefix='ftype', prefix_sep='_')
-        fees_status_dummies = pd.get_dummies(self.merged.fee_status, dtype="int", drop_first=True, prefix='fstatus', prefix_sep='_')
-        # Para poder asignar dummies a category rellenaremos con 'ninguna' los datos faltantes
-        #self.merged['fee_category'].fillna('ninguna', inplace=True)
-        self.merged.fillna({'fee_category': 'ninguna'}, inplace=True)
-        fees_category_dummies = pd.get_dummies(self.merged.fee_category, dtype="int", drop_first=True, prefix='fcategory', prefix_sep='_')        
-        fees_charge_moment_dummies = pd.get_dummies(self.merged.fee_charge_moment, dtype="int", drop_first=True, prefix='fchargemoment', prefix_sep='_')
+            labelencoder = LabelEncoder()
+            df['created_year_month_dummy'] = labelencoder.fit_transform(df['created_year_month'])       
 
-        merged_dummy = pd.concat([self.merged, cash_status_dummies, cash_transfer_type_dummies, cash_recovery_status_dummies,
-                                  fees_type_dummies, fees_status_dummies, fees_category_dummies, fees_charge_moment_dummies], axis=1)
-        merged_dummy.drop(columns=['status','transfer_type','recovery_status','created_year','created_month','created_year_month',
-            'fee_type','fee_status','fee_category','fee_charge_moment'], inplace=True)        
+            concat_dummies = pd.concat([df, cash_status_dummies, cash_transfer_type_dummies, cash_recovery_status_dummies], axis=1)
+            concat_dummies.drop(columns=['status','transfer_type','recovery_status','created_year','created_month','created_year_month'], inplace=True) 
 
-        return merged_dummy   
+        else:
+            # -- fees -----------------------------------------
+            fees_type_dummies = pd.get_dummies(df.type, dtype="int", drop_first=True, prefix='ftype', prefix_sep='_')
+            fees_status_dummies = pd.get_dummies(df.status, dtype="int", drop_first=True, prefix='fstatus', prefix_sep='_')
+            # Para poder asignar dummies a category rellenaremos con 'ninguna' los datos faltantes
+            #self.merged['fee_category'].fillna('ninguna', inplace=True)
+            df.fillna({'category': 'ninguna'}, inplace=True)
+            fees_category_dummies = pd.get_dummies(df.category, dtype="int", drop_first=True, prefix='fcategory', prefix_sep='_')        
+            fees_charge_moment_dummies = pd.get_dummies(df.charge_moment, dtype="int", drop_first=True, prefix='fchargemoment', prefix_sep='_')
+
+            concat_dummies = pd.concat([df, fees_type_dummies, fees_status_dummies, fees_category_dummies, fees_charge_moment_dummies], axis=1)
+            concat_dummies.drop(columns=['type','status','category','charge_moment'], inplace=True)        
+
+        return concat_dummies   
+    
+    # def get_dummies_and_drop_cols(self):
+    #     """
+    #     Transforms categorical columns to numerical
+
+    #     Returns:
+    #     pd.DataFrame: the result of applying get_dummies, OneHotEncoder, LabelEncoder or whatever method best suited to each column
+    #     """
+
+    #     # -- cash_request -----------------------------------------
+    #     cash_status_dummies = pd.get_dummies(self.merged.status, dtype="int", drop_first=True, prefix='cstatus', prefix_sep='_')
+    #     cash_transfer_type_dummies = pd.get_dummies(self.merged.transfer_type, dtype="int", drop_first=True, prefix='ctranstype', prefix_sep='_')        
+    #     cash_recovery_status_dummies = pd.get_dummies(self.merged.recovery_status, dtype="int", drop_first=True, prefix='crecostatus', prefix_sep='_')
+
+    #     # Extract datetime features
+    #     self.merged['created_year'] = self.merged['created_at'].dt.year
+    #     self.merged['created_month'] = self.merged['created_at'].dt.month
+    #     self.merged['created_year_month'] = self.merged.apply(lambda row: str(row["created_year"])+'-'+str(row["created_month"]), axis=1)
+    #     self.merged['created_dayofweek'] = self.merged['created_at'].dt.dayofweek + 1  # Monday=0, Sunday=6
+    #     self.merged['created_hour'] = self.merged['created_at'].dt.hour        
+
+    #     labelencoder = LabelEncoder()
+    #     self.merged['created_year_month_dummy'] = labelencoder.fit_transform(self.merged['created_year_month'])
+
+    #     # -- fees -----------------------------------------
+    #     fees_type_dummies = pd.get_dummies(self.merged.fee_type, dtype="int", drop_first=True, prefix='ftype', prefix_sep='_')
+    #     fees_status_dummies = pd.get_dummies(self.merged.fee_status, dtype="int", drop_first=True, prefix='fstatus', prefix_sep='_')
+    #     # Para poder asignar dummies a category rellenaremos con 'ninguna' los datos faltantes
+    #     #self.merged['fee_category'].fillna('ninguna', inplace=True)
+    #     self.merged.fillna({'fee_category': 'ninguna'}, inplace=True)
+    #     fees_category_dummies = pd.get_dummies(self.merged.fee_category, dtype="int", drop_first=True, prefix='fcategory', prefix_sep='_')        
+    #     fees_charge_moment_dummies = pd.get_dummies(self.merged.fee_charge_moment, dtype="int", drop_first=True, prefix='fchargemoment', prefix_sep='_')
+
+    #     merged_dummy = pd.concat([self.merged, cash_status_dummies, cash_transfer_type_dummies, cash_recovery_status_dummies,
+    #                               fees_type_dummies, fees_status_dummies, fees_category_dummies, fees_charge_moment_dummies], axis=1)
+    #     merged_dummy.drop(columns=['status','transfer_type','recovery_status','created_year','created_month','created_year_month',
+    #         'fee_type','fee_status','fee_category','fee_charge_moment'], inplace=True)        
+
+    #     return merged_dummy   
 
     def create_cash_cohorts(self):
         """
@@ -264,7 +323,7 @@ class Datasets:
         labels = dict(zip(claves, valores))
 
         # Merge 'cohorte' information into the original cash DataFrame
-        cash_cohorts = pd.merge(self.cash, grouped1st[['cohorte']], on='id_usuario')
+        cash_cohorts = pd.merge(self.cash.copy(), grouped1st[['cohorte']], on='id_usuario')
 
         # Add 'cohorte_lbl' column
         cash_cohorts['cohorte_lbl'] = cash_cohorts['cohorte'].transform(lambda x: labels[x])
@@ -281,7 +340,7 @@ class Datasets:
         Returns:
         tuple: A tuple containing the original cash DataFrame and the original fees DataFrame.
         """
-        return self.dataset_cash_original_df, self.dataset_fees_original_df
+        return self.dataset_cash_original_df.copy(), self.dataset_fees_original_df.copy()
     
     def get_datasets(self):
         """
