@@ -88,3 +88,32 @@ En los graficos se presentan las distribuciones de solicitudes por hora y por d�
 ![Solicitudes por dia](figures/days_cash.png)
 
 ![Solicitudes por hora](figures/hours_cash.png)
+
+## Modelos de clasificación
+
+Hemos encontrado en la tabla original de cash, que alrededor del 70% de status corresponde a money_back y cerca a un 30% a rejected. Las operaciones rejected (en su ayoría) han pasado por un proceso de revisión manual: Una incidencia. Esto implica dedicación horaria de personal que podría dedicarse a tareas que puedan destinarse a mejorar la rentabilidad del negocio (estrategias de mercado, análisis de mercado, etc). Así que un modelo de clasificación que permita predecir si una transacción tiene alta probabilidad de ser cancelada podría limitar el número de incidencias y repercutir en las ganancias del negocio (sin reducir el personal de la empresa, sino haciendo que sus tareas sean de mayor impacto: Automatizar tareas repetitivas).
+
+Hemos comenzado por hacer feature engineering de las variables temporales relevantes, y hemos filtrado las variables de amount, status (0: money_back, 1: rejected), ctranstype_regular (1:regular, 0:instantánea). Además hemos añadido la variable exäogena del euribor para probar su importancia. Además de que es una variable de la cual se hace forecast y puede usarse para predicciones futuras.
+
+![Datos para clasificación](figures/cash_clasifica1.png)
+
+Hemos intentado dos modelos de clasificación: Regresión Logística, y GradientBoosting. Hemos hecho una optimización de hiperparámetros para clasificar el status. En el caso de regresión logística hemos variado la regularización. En el caso de GradientBoosting hemos optimizado número de estimadores, learning_rate, max_depth de los arboles de decisión, min_samples_split. A continuación se muestran los mejores hiperparámetros.
+
+![hiperparametros](figures/hyperparameter_1)
+
+Y los resultados de las matrices de confusión, así como de la importancia de las variables de clasificación. Hemos además añadido un análisis de valores Shapley (concepto que nace de la teor¡ia de juegos, para asignar la importancia de cada variable en el rendimiento global del model).
+
+![importancia log](figures/logimp)
+
+![importancia gb](figures/gbimp)
+
+![confusion_matrix](figures/confmatlgb)
+
+![shap](figures/shap)
+
+Algunas conclusiones:
+- La variable exogena euribor aun no tiene un papel de alta importancia, aunque es relevante en los arboles de decision. Puede conservarse, y refinarse a futuro
+- Logistic regression da mucha mas importancia el mes, se necesitan mas datos temporales o tener en cuenta eliminarla del modelo
+- Amount grandes de prestamos tienen relativamente bajo impacto en el status. Juegan mas variables como el dia de la semana y la hora
+- La hora (shapley) tiene un efecto claro en el arbol de decision: A altas horas se hace mas importante su peso para que el status sea rechazado
+
