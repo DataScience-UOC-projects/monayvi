@@ -10,6 +10,11 @@ Versión: 1.0
 Correos: cutmountain@uoc.edu, vbassasb@uoc.edu, ahenaoa@uoc.edu
 
 ## Estructura de los directorios
+### data
+Contiene los ficheros .csv originales del proyecto que son:
+- cash_request.csv
+- fees
+
 ### utils
 
 Hemos creado este folder para compartir código que se reuse en todo el proyecto.
