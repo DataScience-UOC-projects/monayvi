@@ -199,3 +199,7 @@ Observamos que el hecho de tener una cuenta activa (`existing_account`) es deter
 ![Coeficientes ordenados según el valor absoluto](figures/reg_coefs_abs.png)
 
 ![Coeficientes Ridge ordenados según el valor absoluto](figures/reg_coefs_abs_ridge.png)
+
+Parece que el tipo de adelanto es el factor más determinante para la obtención de beneficions, y esto cuadra con el comportamiento de los usuarios en cada cohorte: a cohortes más nuevas, mayor preferencia por el tipo de adelanto isntantáneo, que requiere el pago de una quota.
+
+![Tipo de adelante según cohorte](figures/metricas_tipo_adelanto.png)
