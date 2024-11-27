@@ -48,7 +48,7 @@ users_by_cohort = datasets.get_users_by_cohort()
 ```
 ### ini
 
-Contiene el fichero markdown con el enunciado del proyecto
+Contiene el fichero markdown ``` enunciado.md``` con el enunciado del proyecto
 
 ## Análisis e investigaciones de los datos en original_cash y original_fees
 
