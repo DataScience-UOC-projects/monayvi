@@ -63,9 +63,11 @@ Y la tabla correspondiente al año 2020:
 ![Euribor año 2020](/figures/Euribor2020.png)
 
 
-Para el mercado britanico y americano el gráfico muestra el valor del indice LIBOR , equivalente al Euribor para el Euro.
+Para el mercado británico y americano el gráfico muestra el valor del indice LIBOR , equivalente al Euribor para el Euro.
 
 ![Libor año 2020](/figures/Libor2020.png)
+
+Valores negativos del índice Euribor implica que _se debería devolver menos dinero que el principal solicitado_. Con intereses negativos un impago de una parte del capital solicitado no tiene tanto impacto como en el caso de intereses positivos.
 
 ## Análisis e investigaciones de los datos en original_cash y original_fees
 
