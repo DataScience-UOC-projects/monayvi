@@ -4,12 +4,13 @@ Segon projecte Data Science UOC - Business Payments
 Autores: Montserrat Lopez, Victor Bassas,  Andres Henao
 
 Descripción: Archivo Readme del proyecto de analisis de la empresa Business Payments
+
 Creado: 28/11/2024
 Versión: 1.0
 Correos: cutmountain@uoc.edu, vbassasb@uoc.edu, ahenaoa@uoc.edu
 
-
-## utils
+## Estructura de los directorios
+### utils
 
 Hemos creado este folder para compartir código que se reuse en todo el proyecto.
 Funciones en data.py ([data utils]([https://github.com/ahenao/aguacate-aljoan/blob/main/utils/data.py](https://github.com/DataScience-UOC-projects/monayvi/blob/main/utils/data.py))): 
