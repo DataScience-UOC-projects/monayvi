@@ -1,6 +1,12 @@
 # monayvi
 Segon projecte Data Science UOC - Business Payments
-Autors: 
+
+Autores: Montserrat Lopez, Victor Bassas,  Andres  Henao
+Descripción: Archivo Readme del proyecto de analisis de la empresa Business Payments
+Creado: 28/11/2024
+Versión: 1.0
+Correos: cutmountain@uoc.edu, vbassasb@uoc.edu, ahenaoa@uoc.edu
+
 
 ## utils
 
