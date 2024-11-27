@@ -99,17 +99,17 @@ Hemos comenzado por hacer feature engineering de las variables temporales releva
 
 Hemos intentado dos modelos de clasificación: Regresión Logística, y GradientBoosting. Hemos hecho una optimización de hiperparámetros para clasificar el status. En el caso de regresión logística hemos variado la regularización. En el caso de GradientBoosting hemos optimizado número de estimadores, learning_rate, max_depth de los arboles de decisión, min_samples_split. A continuación se muestran los mejores hiperparámetros.
 
-![hiperparametros](figures/hyperparameter_1)
+![hiperparametros](figures/hyperparameter_1.png)
 
 Y los resultados de las matrices de confusión, así como de la importancia de las variables de clasificación. Hemos además añadido un análisis de valores Shapley (concepto que nace de la teor¡ia de juegos, para asignar la importancia de cada variable en el rendimiento global del model).
 
-![importancia log](figures/logimp)
+![importancia log](figures/logimp.png)
 
-![importancia gb](figures/gbimp)
+![importancia gb](figures/gbimp.png)
 
-![confusion_matrix](figures/confmatlgb)
+![confusion_matrix](figures/confmatlgb.png)
 
-![shap](figures/shap)
+![shap](figures/shap.png)
 
 Algunas conclusiones:
 - La variable exogena euribor aun no tiene un papel de alta importancia, aunque es relevante en los arboles de decision. Puede conservarse, y refinarse a futuro
