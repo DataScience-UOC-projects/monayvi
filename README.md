@@ -17,7 +17,8 @@ Contiene los ficheros .csv originales del proyecto que son:
 - Lexique-Data_Analyst.xlsx : describe los campos de los ficheros anteriores
 
 ### notebooks
-En este directorio se encuentran los ficheros de jupyter notebook utilizados para la elaboor
+En esta carpeta se encuentran los ficheros de jupyter notebook utilizados para la elaboración de los análisis y modelos
+
 ### utils
 
 Hemos creado este folder para compartir código que se reuse en todo el proyecto.
@@ -45,6 +46,10 @@ cash_cohorts = datasets.create_cash_cohorts()
 original_cash, original_fees = datasets.get_original_datasets()
 users_by_cohort = datasets.get_users_by_cohort()
 ```
+### ini
+
+Contiene el fichero markdown con el enunciado del proyecto
+
 ## Análisis e investigaciones de los datos en original_cash y original_fees
 
 **Análisis de operaciones en el tiempo**
