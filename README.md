@@ -52,9 +52,20 @@ Contiene el fichero markdown ```enunciado.md``` con el enunciado del proyecto
 
 ## Contexto social y económico
 
-Las fechas de estudio coniciden con la pandemia de COVID durante el primer trimestre de 2020 y la progresiva recuperación de la actividad en los meses de mayo, junio y julio.
-Los intereses para préstamos de dinero interbancario en Europa estaba a tasas negativas y en Estados Unidos y Reino Unido a tasas positivas cercanas al 0%
-![Euribor año 2019](/figures/Euribor2019.png){height="50%":width="50%"}
+Las fechas de estudio coinciden con la explosión de la pandemia de COVID durante el primer trimestre de 2020 y la progresiva recuperación de la actividad en los meses de mayo, junio y julio.
+Los intereses para préstamos de dinero interbancario en Europa estaban a tasas negativas y en Estados Unidos y Reino Unido a tasas positivas cercanas al 0%
+
+En esta tabla se muestra el Euribor para el año 2019
+![Euribor año 2019](/figures/Euribor2019.png)
+
+Y la tabla correspondiente al año 2020:
+
+![Euribor año 2020](/figures/Euribor2020.png)
+
+
+Para el mercado britanico y americano el gráfico muestra el valor del indice LIBOR , equivalente al Euribor para el Euro.
+
+![Libor año 2020](/figures/Libor2020.png)
 
 ## Análisis e investigaciones de los datos en original_cash y original_fees
 
