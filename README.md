@@ -62,6 +62,16 @@ Y la tabla correspondiente al año 2020:
 
 ![Euribor año 2020](/figures/Euribor2020.png)
 
+En un ejercicio de scrapping básico, hemos obtenido las tablas del euríbor para ser usadas luego posiblemente como variable exógena. Pandas tiene la función de leer tablas html si se encuentran en páginas bien de forma estructuradas:
+
+```
+import pandas as pd
+link_euribor_2020 = "https://www.euribor-rates.eu/es/tipos-de-interes-euribor-por-ano/2020/"
+tablas_2020 = pd.read_html(link_euribor_2020)
+euribor2020_df = tablas_2020[0]
+euribor2020_df = pd.to_csv("../data/euribor.csv")
+```
+
 
 Para el mercado británico y americano el gráfico muestra el valor del indice LIBOR , equivalente al Euribor para el Euro.
 
