@@ -95,7 +95,9 @@ Hemos analizado el comportamiento de los _deleted users_ , los usuarios que han 
 
 ![Status deleted users](figures/Status_deleted_users.png)
 
-Observamos que un 
+Observamos que un 64% de dichos usuarios han sido resultado de operaciones tipo rejected pero que 34% (715 usuarios) han devuelto el dinero y han sido dados de baja.
+![Pie_Chart_deleted users](figures/Pie_Chart_deleted_users.png)
+
 ## Modelos de clasificación
 
 Hemos encontrado en la tabla original de cash, que alrededor del 70% de status corresponde a money_back y cerca a un 30% a rejected. Las operaciones rejected (en su ayoría) han pasado por un proceso de revisión manual: Una incidencia. Esto implica dedicación horaria de personal que podría dedicarse a tareas que puedan destinarse a mejorar la rentabilidad del negocio (estrategias de mercado, análisis de mercado, etc). Así que un modelo de clasificación que permita predecir si una transacción tiene alta probabilidad de ser cancelada podría limitar el número de incidencias y repercutir en las ganancias del negocio (sin reducir el personal de la empresa, sino haciendo que sus tareas sean de mayor impacto: Automatizar tareas repetitivas).
