@@ -54,7 +54,7 @@ Contiene el fichero markdown ```enunciado.md``` con el enunciado del proyecto
 
 Las fechas de estudio coniciden con la pandemia de COVID durante el primer trimestre de 2020 y la progresiva recuperación de la actividad en los meses de mayo, junio y julio.
 Los intereses para préstamos de dinero interbancario en Europa estaba a tasas negativas y en Estados Unidos y Reino Unido a tasas positivas cercanas al 0%
-
+![Euribor año 2019](/figures/Euribor2019.png)
 
 ## Análisis e investigaciones de los datos en original_cash y original_fees
 
