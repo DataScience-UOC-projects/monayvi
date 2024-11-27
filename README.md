@@ -130,3 +130,72 @@ EL algoritmo propone tres categorías de clientes. Debemos definir junto a los e
 
 Aún se pueden hacer mejoras y análisis junto a los expertos de negocio para optimizar esta solución algorítimica.
 
+## Análisis de Regresión para Beneficios obtenidos de fees
+
+Centrándonos en maximizar el beneficio para la empresa (Business Payments), nos fijamos en los 100 clientes que han generado mayor beneficio a lo largo del año. Para estos clientes, obtenemos el total de dinero prestado, así como el total de beneficio generado a partir de fees.
+
+![Total amount fees](figures/reg_sum_amounts_table.png)
+
+Tras la codificación mediante get_dummies() y LabelEncoder(), vemos la posible correlación entre las distintas variables.
+
+![Correlation matrix](figures/reg_sum_amounts_corr_matrix.png)
+
+A priori tendría sentido que una mayor cantidad de dinero prestado generase mayor beneficio, ya sea por tratarse de transacciones instantáneas como por el hecho de que a mayor número de transacciones, más probable es que alguna de ellas sufra un incidente de pago y por tanto se cobre una fees.
+
+Generamos un modelo de regresión lineal mediante el cual queremos observar qué características son las que definen a los mejores usuarios, i.e. los que dan más beneficios. Para ellos, tomamos los datos agrupados para todos los meses disponibles except el último, octubre de 2020, para el cual generaremos una predicción.
+
+Al comparar el modelo con los valores reales, comprobamos que la capacidad de predicción es bastante buena.
+
+![Prediction vs Real Values](figures/reg_sum_amounts_y.png)
+
+De hecho, esto queda reflejado en los parámetros que nos indican la calidad del modelo predictivo:
+
+<img src="./figures/reg_sum_amounts_r2.png" alt="R^2 y MSE" width="350" style="margin-left:50px"/>
+
+![Residue](figures/reg_sum_amounts_residuo.png)
+
+Los coeficientes obtenidos nos indican la importancia de cada una de las variables: al contrario de lo que parecía, `amount` no es demasiado significativa, mientras que sí lo son el momento _año/mes_ en que se realizó la solicitud y sobre todo si la cuota se cobró antes o después `fee_charge_moment` de recibir el préstamo.
+
+<img src="./figures/reg_sum_amounts_coefs.png" alt="Intercepto y Coeficientes para la Regresión Lineal" width="350" style="margin-left:50px"/>
+
+Así pues, parece que los préstamos en los que se cobró la cuota después (`after`), son los más provechosos. Casualmente, vemos que esto coincide con los préstamos de recepción inmediata (`instant`), que son los más numerosos.
+
+<img src="./figures/eda_fee_charge_moment.png" alt="Desglose fee_charge_moment en relación a transfer_type" width="330" style="margin-left:50px"/>
+
+Si mostramos estos coeficientes de forma gráfica, será más evidente.
+
+![Coeficientes ordenados según el valor absoluto](figures/reg_sum_amounts_coefs_abs.png)
+
+Aplicando una regulación de Ridge, obtenemos una leve mejora en el MSE del conjunto de prueba (test), pero casi imperceptible.
+
+![Coeficientes Ridge ordenados según el valor absoluto](figures/reg_sum_amounts_coefs_abs_ridge.png)
+
+## Análisis de Regresión ampliando las características
+
+Realizamos ahora el mismo ejercicio pero con un conjunto ampliado de características, aquellas que pensamos que pueden tener un impacto significativo en el pronóstico de beneficios.
+
+La matriz de correlación para las características seleccionadas tiene el siguiente aspecto.
+
+![Correlation matrix](figures/reg_corr_matrix.png)
+
+Destaca un cero rotundo en la correlación entre el `status` con valor `money_back` y la hora de solicitud del préstamo.
+
+En este caso, la calidad del modelo de regresión lineal nos muestra un mejor ajuste del conjunto de entrenamiento (0.94 en lugar de 0.93) pero un peor ajuste del conjunto de pruebas (0.81 en lugar de 0.83).
+
+<img src="./figures/reg_r2.png" alt="R^2 y MSE" width="350" style="margin-left:50px"/>
+
+Esto se ve reflejado en las gráficas de predicción vs valores reales, y residuo.
+
+![Prediction vs Real Values](figures/reg_sum_amounts_y.png)
+
+![Residue](figures/reg_sum_amounts_residuo.png)
+
+Los coeficientes para cada una de las características son:
+
+<img src="./figures/reg_coefs.png" alt="Intercepto y Coeficientes para la Regresión Lineal" width="450" style="margin-left:50px"/>
+
+Observamos que el hecho de tener una cuenta activa (`existing_account`) es determinante en el cálculo de la predicción. También, que el `transfer_type` no sea de tipo `regular` sino `instant`. Para el resto de coeficientes, una visión gráfica nos dará información más interpretable.
+
+![Coeficientes ordenados según el valor absoluto](figures/reg_coefs_abs.png)
+
+![Coeficientes Ridge ordenados según el valor absoluto](figures/reg_coefs_abs_ridge.png)
