@@ -117,3 +117,16 @@ Algunas conclusiones:
 - Amount grandes de prestamos tienen relativamente bajo impacto en el status. Juegan mas variables como el dia de la semana y la hora
 - La hora (shapley) tiene un efecto claro en el arbol de decision: A altas horas se hace mas importante su peso para que el status sea rechazado
 
+## Modelos de aprendizaje no supervisado - clustering como herramienta de segmentacion de clientes
+
+Hemos hecho una prueba de segmentacion de clientes, para dar información al departamento de estrategia y mercadeo para retener buenos clientes y captar nuevos potenciales. Hemos hecho pruebas usando variables tanto de cash como de fees: número de peticiones aprobadas, cantidad total prestada, fees totales pagados, para los usuarios activos.
+hemos probado un PCA: Principal component analysis (que puede ser mas facil de interpretar) y un modelo t-SNE que es no lineal.
+
+![PCAseg](figures/pcaseg.png)
+
+![tsneseg](figures/tsneseg.png)
+
+EL algoritmo propone tres categorías de clientes. Debemos definir junto a los expertos del negocio la correspondencia de estas clases (premium, platinum, gold?)
+
+Aún se pueden hacer mejoras y análisis junto a los expertos de negocio para optimizar esta solución algorítimica.
+
