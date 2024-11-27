@@ -69,7 +69,7 @@ import pandas as pd
 link_euribor_2020 = "https://www.euribor-rates.eu/es/tipos-de-interes-euribor-por-ano/2020/"
 tablas_2020 = pd.read_html(link_euribor_2020)
 euribor2020_df = tablas_2020[0]
-euribor2020_df = pd.to_csv("../data/euribor.csv")
+euribor2020_df.to_csv("../data/euribor.csv")
 ```
 
 
