@@ -12,9 +12,12 @@ Correos: cutmountain@uoc.edu, vbassasb@uoc.edu, ahenaoa@uoc.edu
 ## Estructura de los directorios
 ### data
 Contiene los ficheros .csv originales del proyecto que son:
-- cash_request.csv
-- fees
+- cash_request.csv : contiene las peticiones de cash de los clientes y los datos asociados
+- fees.csv: contiene las comisiones asociadas a las operaciones de cash request por usuario
+- Lexique-Data_Analyst.xlsx : describe los campos de los ficheros anteriores
 
+### notebooks
+En este directorio se encuentran los ficheros de jupyter notebook utilizados para la elaboor
 ### utils
 
 Hemos creado este folder para compartir código que se reuse en todo el proyecto.
