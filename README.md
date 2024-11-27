@@ -67,7 +67,7 @@ Para el mercado británico y americano el gráfico muestra el valor del indice L
 
 ![Libor año 2020](/figures/Libor2020.png)
 
-Valores negativos del índice Euribor implica que _se debería devolver menos dinero que el principal solicitado_. Con intereses negativos un impago de una parte del capital solicitado no tiene tanto impacto como en el caso de intereses positivos.
+Valores negativos del índice Euribor implica que _se debería devolver menos dinero que el principal solicitado_. Con intereses negativos un impago de una parte del capital solicitado, no tiene tanto impacto para el banco como en el caso de intereses positivos.
 
 ## Análisis e investigaciones de los datos en original_cash y original_fees
 
