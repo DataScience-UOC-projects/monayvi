@@ -6,7 +6,7 @@ Autores: Montserrat Lopez, Victor Bassas,  Andres Henao
 Descripción: Archivo Readme del proyecto de analisis de la empresa Business Payments
 
 Creado: 27/11/2024
-Versión: 1.0
+Versión: 1.0  
 Correos: cutmountain@uoc.edu, vbassasb@uoc.edu, ahenaoa@uoc.edu
 
 ## Estructura de los directorios
