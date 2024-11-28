@@ -81,6 +81,16 @@ Valores negativos del índice Euribor implica que _se debería devolver menos di
 
 ## Análisis e investigaciones de los datos en original_cash y original_fees
 
+**Análisis EDA de los datos** 
+
+Del EDA se obtienen las siguiente observaciones: 
+
+1. cash_request: 23.970 filas
+2. fees: 21.061 filas
+3. Hay 11.037 entradas en cash_request que no tienen correspondencia en fees (porque son solicitudes SIN incidentes donde todo ha ido bien)
+4. Hay 4 entradas en fees, en las que hemos repoblado 'cash_request_id' a partir de 'reason', pero que de todos modos NO tienen correspondencia en cash -> Haremos drop() de esas 4 filas
+
+
 **Análisis de operaciones en el tiempo**
 
 En los graficos se presentan las distribuciones de solicitudes por hora y por día. Se encuentra un pico de solicitudes para los martes (una disminución en fines de semana), así como un pico de solicitudes a las 16:00 y una distribución de solicitudes centrada en las horas laborables. Esto nos indica que agregar features como hora y día de la semana puede proveer información a modelos de predicción.La codificación de los días de semana es de 0-6, siendo 0: lunes y 6: Domingo.
