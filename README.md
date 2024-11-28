@@ -85,8 +85,8 @@ Valores negativos del índice Euribor implica que _se debería devolver menos di
 
 Del EDA se obtienen las siguiente observaciones: 
 
-1. cash_request: 23.970 filas
-2. fees: 21.061 filas
+1. fichero cash_request: 23.970 filas
+2. fichero fees: 21.061 filas
 3. Hay 11.037 entradas en cash_request que no tienen correspondencia en fees (porque son solicitudes SIN incidentes donde todo ha ido bien)
 4. Hay 4 entradas en fees, en las que hemos repoblado 'cash_request_id' a partir de 'reason', pero que de todos modos NO tienen correspondencia en cash -> Haremos drop() de esas 4 filas
 
