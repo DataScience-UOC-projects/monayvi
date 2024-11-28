@@ -108,6 +108,15 @@ Hemos analizado el comportamiento de los _deleted users_ , los usuarios que han 
 Observamos que un 64% de dichos usuarios han sido resultado de operaciones tipo rejected pero que 34% (715 usuarios) han devuelto el dinero y han sido dados de baja.
 ![Pie_Chart_deleted users](figures/Pie_Chart_deleted_users.png)
 
+**Cantidades solicitadas por los usuarios**  
+
+
+![Violinplot_cash amounts](figures/Violinplot_cash_amounts.png)
+
+Mayoritariamente las cantidades solicitadas se situan alrededor de las 100 unidades monetarias y con un segundo grupo alrededor de los 50 unidades monetarias. 
+El resto de cantidades solicitadas son muy inferiores en número.
+
+
 **Elasticidad de las peticiones**
 
 Es interesante explorar como la variacion del precio del dinero , expresado por el euribor, afecta a la cantidad  de peticiones de cash 
